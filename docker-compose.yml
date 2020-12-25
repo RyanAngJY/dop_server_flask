@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+    # Note that you must run `npm run build` before running `docker-compose build` and `docker-compose run`
+    backend:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
+
+    db:
+        image: "mysql" # use latest official MySQL version
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: test_db
+        volumes:
+            - mysql-data:/var/lib/mysql # persist data even if container shuts down
+
+volumes:
+    mysql-data: # named volumes can be managed easier using docker-compose
