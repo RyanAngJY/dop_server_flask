@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from flask_mysql_connector import MySQL
+from dop_python_pip_package.main_utils.math import add # our own pip library
 
 app = Flask(__name__)
 
@@ -19,9 +20,11 @@ def home():
     output = cur.fetchall()
 
     # Proto
-    
 
-    return jsonify({"hello": str(output)})
+    # Pip package utils
+    num = add(1, 2)
+    
+    return jsonify({"hello": str(output), "num": num})
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8000)

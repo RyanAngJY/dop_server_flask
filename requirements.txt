@@ -1,4 +1,5 @@
 click==7.1.2
+dop-python-pip-package==0.0.0
 Flask==1.1.2
 flask-mysql-connector==1.0.3
 grpcio==1.34.0
