@@ -7,7 +7,7 @@ start:
 	docker-compose up --build
 
 dev_start:
-	python app.py
+	make start
 
 bash:
 	docker run --name dop_server_flask -p 8000:8000 ryanang/backend_server:latest

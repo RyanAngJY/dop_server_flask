@@ -7,6 +7,8 @@ services:
             dockerfile: Dockerfile
         ports:
             - "8000:8000"
+        volumes:
+            - .:/app # mount the current dir to /app dir in the container (so that when any changes made locally will be reflected in the container)
 
     db:
         image: "mysql" # use latest official MySQL version
