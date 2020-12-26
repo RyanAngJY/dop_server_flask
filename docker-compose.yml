@@ -1,7 +1,6 @@
 version: "3"
 
 services:
-    # Note that you must run `npm run build` before running `docker-compose build` and `docker-compose run`
     backend:
         build:
             context: .

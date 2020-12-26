@@ -4,14 +4,20 @@ build:
 	docker build -t ryanang/backend_server:latest .
 
 start:
-	make build
-	docker run -p 8000:8000 ryanang/backend_server:latest
+	docker-compose up --build
+
+dev_start:
+	python app.py
+
+bash:
+	docker run --name dop_server_flask -p 8000:8000 ryanang/backend_server:latest
+	docker exec dop_server_flask bash
 
 push:
 	make build
 	docker push ryanang/backend_server:latest
 
-db:
+db: # to access the DB shell
  	# make sure you run `docker-compose up` first
 	docker-compose exec db mysql -u root -proot -D test_db
 
