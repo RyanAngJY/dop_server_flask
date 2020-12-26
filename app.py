@@ -2,7 +2,7 @@ import grpc
 from flask import Flask, jsonify
 from flask_mysql_connector import MySQL
 from dop_python_pip_package.main_utils.math import add # our own pip library
-from proto.dep.python.core import blog_pb2_grpc, blog_pb2
+from proto.dep.microservice import microservice_pb2_grpc, microservice_pb2
 
 app = Flask(__name__)
 
@@ -19,18 +19,18 @@ def home():
     num = add(1, 2)
 
     # DB
-    # conn = db.connection
-    # cur = conn.cursor()
-    # cur.execute("select * from test;")
-    # output = cur.fetchall()
+    conn = db.connection
+    cur = conn.cursor()
+    cur.execute("select * from test;")
+    output = cur.fetchall()
 
     # Proto
     # channel = grpc.insecure_channel('localhost:50051')
     channel = grpc.insecure_channel('docker.for.mac.localhost:50051')
-    stub = blog_pb2_grpc.BlogServiceStub(channel)
-    response = stub.GetBlog(blog_pb2.GetBlogRequest())
+    stub = microservice_pb2_grpc.BlogServiceStub(channel)
+    response = stub.GetBlog(microservice_pb2.GetBlogRequest())
 
-    return jsonify({"db": str(""), "lib": num, "microservice": str(response.blog)})
+    return jsonify({"db": str(output), "lib": num, "microservice": str(response.blog)})
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8000)

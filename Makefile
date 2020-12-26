@@ -1,4 +1,4 @@
-DEP_PROTO_DIR=./proto/dep/proto
+DEP_PROTO_DIR=./proto/dep
 
 build:
 	docker build -t ryanang/backend_server:latest .
@@ -21,5 +21,13 @@ db: # to access the DB shell
  	# make sure you run `docker-compose up` first
 	docker-compose exec db mysql -u root -proot -D test_db
 
+# ========= Proto installation and generation ===========
+install_proto_common:
+	./proto/install_proto_common.sh
+
 gen: # Ryan TODO: By right, you are supposed to pull from the proto repository and compile instead of directly compiling from the source
-	python -m grpc_tools.protoc -I$(DEP_PROTO_DIR) --python_out=proto/dep/python --grpc_python_out=proto/dep/python $(DEP_PROTO_DIR)/*/*.proto
+	python -m grpc_tools.protoc --proto_path=. --python_out=. --grpc_python_out=. $(DEP_PROTO_DIR)/*/*.proto
+
+install_gen:
+	make install_proto_common
+	make gen
