@@ -5,6 +5,7 @@ build:
 	docker build -t $(IMAGE_NAME) .
 
 start:
+	docker-compose down
 	docker-compose up --build
 
 dev_start:
