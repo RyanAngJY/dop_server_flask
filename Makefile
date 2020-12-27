@@ -1,7 +1,8 @@
 DEP_PROTO_DIR=./proto/dep
+IMAGE_NAME=ryanang/backend_server:latest
 
 build:
-	docker build -t ryanang/backend_server:latest .
+	docker build -t $(IMAGE_NAME) .
 
 start:
 	docker-compose up --build
@@ -9,17 +10,17 @@ start:
 dev_start:
 	make start
 
-bash:
-	docker run --name dop_server_flask -p 8000:8000 ryanang/backend_server:latest
-	docker exec dop_server_flask bash
-
-push:
+push_to_docker_hub:
 	make build
-	docker push ryanang/backend_server:latest
+	docker push $(IMAGE_NAME)
 
 db: # to access the DB shell
  	# make sure you run `docker-compose up` first
 	docker-compose exec db mysql -u root -proot -D test_db
+
+enter: # to enter the shell of the image
+	make build
+	docker run -it $(IMAGE_NAME) bash
 
 # ========= Proto installation and generation ===========
 install_proto_common:

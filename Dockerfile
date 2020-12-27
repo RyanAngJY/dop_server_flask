@@ -8,6 +8,9 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
-ENTRYPOINT ["python"]
 
-CMD ["app.py"]
+ARG my_arg=hello
+
+ENV test=${my_arg}
+
+CMD ["python", "app.py"]
