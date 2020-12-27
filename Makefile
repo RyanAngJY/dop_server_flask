@@ -18,9 +18,12 @@ db: # to access the DB shell
  	# make sure you run `docker-compose up` first
 	docker-compose exec db mysql -u root -proot -D test_db
 
-enter: # to enter the shell of the image
+shell: # to enter the shell of the image
 	make build
 	docker run -it $(IMAGE_NAME) bash
+
+health_check:
+	curl http://localhost:8000/api/
 
 # ========= Proto installation and generation ===========
 install_proto_common:
