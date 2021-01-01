@@ -31,6 +31,12 @@ services:
             dockerfile: Dockerfile.local
         environment:
             - LOCALHOST=docker.for.mac.localhost
+            - GRPC_HOST=docker.for.mac.localhost
+            - KAFKA_HOST=kafka
+            - MYSQL_HOST=db # this is the service name in docker compose
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=root
+            - MYSQL_DATABASE=test_db
         ports:
             - "8000:8000"
         volumes:
