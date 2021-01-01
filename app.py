@@ -2,6 +2,7 @@ import grpc
 import json
 import os
 from flask import Flask, jsonify
+from flask_cors import CORS
 from flask_mysql_connector import MySQL
 from dop_python_pip_package.main_utils.math import add # our own pip library
 from proto.dep.microservice import microservice_pb2_grpc, microservice_pb2
@@ -11,6 +12,7 @@ LOCALHOST = os.getenv("LOCALHOST", "localhost")
 TOPIC = "testtopic"
 
 app = Flask(__name__)
+CORS(app)
 log = app.logger
 
 app.config['MYSQL_HOST'] = 'db' # this is the service name in docker compose
