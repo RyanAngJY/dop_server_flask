@@ -1,8 +1,16 @@
 DEP_PROTO_DIR=./proto/dep
-IMAGE_NAME=ryanang/backend_server:latest
+IMAGE_NAME=ryanang/dop_server_flask:latest
 
 build:
 	docker build -t $(IMAGE_NAME) .
+
+push_to_docker_hub:
+	make build
+	docker push $(IMAGE_NAME)
+
+# ============== Development ===============
+build_local:
+	docker build -t $(IMAGE_NAME) . -f Dockerfile.local
 
 start:
 	docker-compose down
@@ -11,16 +19,12 @@ start:
 dev_start:
 	make start
 
-push_to_docker_hub:
-	make build
-	docker push $(IMAGE_NAME)
-
 db: # to access the DB shell
  	# make sure you run `docker-compose up` first
 	docker-compose exec db mysql -u root -proot -D test_db
 
 shell: # to enter the shell of the image
-	make build
+	make build_local
 	docker run -it $(IMAGE_NAME) bash
 
 health_check:
