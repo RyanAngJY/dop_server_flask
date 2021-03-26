@@ -2,30 +2,26 @@ DEP_PROTO_DIR=./proto/dep
 IMAGE_NAME=ryanang/dop_server_flask:latest
 .DEFAULT_GOAL := dev_start # set default target to run
 
-build:
-	docker build -t $(IMAGE_NAME) .
-
-push_to_docker_hub:
-	make build
-	docker push $(IMAGE_NAME)
-
 # ============== Development ===============
-build_local:
-	docker build -t $(IMAGE_NAME) . -f Dockerfile.local
+# For development server
+dev_start:
+	make start
 
+# For development server (on Docker)
 start:
 	docker-compose down
 	docker-compose up --build
-
-dev_start:
-	make start
 
 db: # to access the DB shell
  	# make sure you run `docker-compose up` first
 	docker-compose exec db mysql -u root -proot -D test_db
 
-shell: # to enter the shell of the image
-	make build_local
+build_local:
+	docker build -t $(IMAGE_NAME) . -f Dockerfile.local
+
+# Go into the shell of the Docker container
+shell: build_local 
+	# to enter the shell of the image
 	docker run -it $(IMAGE_NAME) bash
 
 health_check:
@@ -41,3 +37,11 @@ gen: # Ryan TODO: By right, you are supposed to pull from the proto repository a
 install_gen:
 	make install_proto_common
 	make gen
+
+# ========= Building Docker Image ===========
+build:
+	docker build -t $(IMAGE_NAME) .
+
+push_to_docker_hub:
+	make build
+	docker push $(IMAGE_NAME)
