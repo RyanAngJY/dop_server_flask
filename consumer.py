@@ -14,8 +14,8 @@ consumer = KafkaConsumer(
 )
 
 if __name__ == '__main__':
-    logging.info("HELLO")
+    logging.info("START CONSUMER")
     for message in consumer:
         logging.info(message)
 
-    logging.info("FINISH")
+    logging.info("END CONSUMER")
