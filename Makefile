@@ -1,5 +1,6 @@
 DEP_PROTO_DIR=./proto/dep
 IMAGE_NAME=ryanang/dop_server_flask:latest
+.DEFAULT_GOAL := dev_start # set default target to run
 
 build:
 	docker build -t $(IMAGE_NAME) .
