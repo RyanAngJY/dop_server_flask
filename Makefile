@@ -42,6 +42,5 @@ install_gen:
 build:
 	docker build -t $(IMAGE_NAME) .
 
-push_to_docker_hub:
-	make build
+push_to_docker_hub: build
 	docker push $(IMAGE_NAME)
