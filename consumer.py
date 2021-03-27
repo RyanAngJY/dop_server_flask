@@ -4,8 +4,9 @@ from kafka import KafkaConsumer
 
 import logging
 
-logging.basicConfig(filename='consumer.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-logging.warning('This will get logged to a file')
+from log_util import setup_file_logger
+
+consumer_logger = setup_file_logger("consumer_logger", "log/consumer.log", logging.INFO)
 
 consumer = KafkaConsumer(
     "testtopic",
@@ -14,8 +15,8 @@ consumer = KafkaConsumer(
 )
 
 if __name__ == '__main__':
-    logging.info("START CONSUMER")
+    consumer_logger.info("START CONSUMER")
     for message in consumer:
-        logging.info(message)
+        consumer_logger.info("RECEIVED MESSAGE FROM KAFKA: {}".format(message))
 
-    logging.info("END CONSUMER")
+    consumer_logger.info("END CONSUMER")

@@ -7,6 +7,7 @@ from flask_mysql_connector import MySQL
 from dop_python_pip_package.main_utils.math import add # our own pip library
 from proto.dep.microservice import microservice_pb2_grpc, microservice_pb2
 from kafka import KafkaProducer
+from log_util import log
 
 # Env variables
 LOCALHOST = os.getenv("LOCALHOST", "localhost")
@@ -20,7 +21,6 @@ MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "test_db")
 # Setup
 app = Flask(__name__)
 CORS(app)
-log = app.logger
 
 # MySQL Config
 app.config['MYSQL_HOST'] = MYSQL_HOST
@@ -38,7 +38,7 @@ producer = KafkaProducer(
 
 @app.route('/api/')
 def home():
-    log.info("HOME")
+    log("HOME")
     # Pip package utils
     num = add(1, 2)
 
@@ -56,15 +56,16 @@ def home():
     # Kafka
     future = producer.send(TOPIC, {"test": "hello"}).add_callback(on_send_success).add_errback(on_send_error)
     result = future.get(timeout=5)
+    log("Result = {}".format(result))
 
-    return jsonify({"db": str(output), "lib": num, "microservice": str(response.blog)})
+    return jsonify({"db": str(output), "topic": result.topic, "lib": num, "microservice": str(response.blog)})
 
 
 def on_send_success(metadata):
-    print(metadata)
+    log("SUCCESSFULLY SENT TO KAFKA")
 
 def on_send_error(excp):
-    print(excp)
+    log("ERROR AFTER SENT TO KAFKA")
 
 @app.route('/api/produce')
 def produce():
