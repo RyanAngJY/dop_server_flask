@@ -1,13 +1,14 @@
 import grpc
 import json
 import os
+import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_mysql_connector import MySQL
 from dop_python_pip_package.main_utils.math import add # our own pip library
 from proto.dep.microservice import microservice_pb2_grpc, microservice_pb2
 from kafka import KafkaProducer
-from log_util import log
+from log_util import log, create_file_handler, default_formatter
 
 # Env variables
 LOCALHOST = os.getenv("LOCALHOST", "localhost")
@@ -43,17 +44,20 @@ def home():
     num = add(1, 2)
 
     # DB
+    log("GETTING FROM DB")
     conn = db.connection
     cur = conn.cursor()
-    cur.execute("select * from test;")
+    cur.execute("select * from test limit 1;")
     output = cur.fetchall()
 
     # Proto
+    log("CALLING MICROSERVICE")
     channel = grpc.insecure_channel('{}:50051'.format(GRPC_HOST))
     stub = microservice_pb2_grpc.BlogServiceStub(channel)
     response = stub.GetBlog(microservice_pb2.GetBlogRequest())
 
     # Kafka
+    log("SENDING TO KAFKA")
     future = producer.send(TOPIC, {"test": "hello"}).add_callback(on_send_success).add_errback(on_send_error)
     result = future.get(timeout=5)
     log("Result = {}".format(result))

@@ -4,9 +4,9 @@ from kafka import KafkaConsumer
 
 import logging
 
-from log_util import setup_file_logger
+from log_util import create_file_and_std_out_logger
 
-consumer_logger = setup_file_logger("consumer_logger", "log/consumer.log", logging.INFO)
+consumer_logger = create_file_and_std_out_logger("consumer_logger", "log/consumer.log", logging.INFO)
 
 consumer = KafkaConsumer(
     "testtopic",
