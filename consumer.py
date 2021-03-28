@@ -6,11 +6,13 @@ import logging
 
 from log_util import create_file_and_std_out_logger
 
+KAFKA_HOST = os.getenv("KAFKA_HOST", "localhost")
+
 consumer_logger = create_file_and_std_out_logger("consumer_logger", "log/consumer.log", logging.INFO)
 
 consumer = KafkaConsumer(
     "testtopic",
-    bootstrap_servers=['kafka:9092'],
+    bootstrap_servers=['{}:9092'.format(KAFKA_HOST)],
     value_deserializer=lambda x: json.loads(x.decode('utf-8'))
 )
 

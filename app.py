@@ -45,10 +45,14 @@ def home():
 
     # DB
     log("GETTING FROM DB")
-    conn = db.connection
-    cur = conn.cursor()
-    cur.execute("select * from test limit 1;")
-    output = cur.fetchall()
+    output = "dummy_db_output"
+    try:
+        conn = db.connection
+        cur = conn.cursor()
+        cur.execute("select * from test limit 1;")
+        output = cur.fetchall()
+    except Exception:
+        pass
 
     # Proto
     log("CALLING MICROSERVICE")

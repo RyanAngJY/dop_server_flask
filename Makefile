@@ -1,5 +1,6 @@
 DEP_PROTO_DIR=./proto/dep
 IMAGE_NAME=ryanang/dop_server_flask:latest
+CONSUMER_IMAGE_NAME=ryanang/dop_kafka_consumer:latest
 .DEFAULT_GOAL := dev_start # set default target to run
 
 # ============== Development ===============
@@ -41,7 +42,9 @@ install_gen:
 # ========= Building Docker Image ===========
 build:
 	docker build -t $(IMAGE_NAME) .
+	docker build -t $(CONSUMER_IMAGE_NAME) . -f Dockerfile.consumer
 
 # push to docker hub
 push: build
 	docker push $(IMAGE_NAME)
+	docker push $(CONSUMER_IMAGE_NAME)
