@@ -33,10 +33,10 @@ services:
             - LOCALHOST=docker.for.mac.localhost
             - GRPC_HOST=docker.for.mac.localhost
             - KAFKA_HOST=kafka # this references the KAFKA_ADVERTISED_HOST_NAME
-            - MYSQL_HOST=db # this is the service name in docker compose
-            - MYSQL_USER=root
-            - MYSQL_PASSWORD=root
-            - MYSQL_DATABASE=test_db
+            - MYSQL_HOST=dop-database.cvsrbibageju.ap-southeast-1.rds.amazonaws.com
+            - MYSQL_USER=admin
+            - MYSQL_PASSWORD=dopdatabaseroot
+            - MYSQL_DATABASE=dop_database
         ports:
             - "8000:8000"
         volumes:

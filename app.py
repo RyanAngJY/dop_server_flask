@@ -15,8 +15,8 @@ LOCALHOST = os.getenv("LOCALHOST", "localhost")
 GRPC_HOST = os.getenv("GRPC_HOST", "localhost")
 KAFKA_HOST = os.getenv("KAFKA_HOST", "localhost")
 MYSQL_HOST = os.getenv("MYSQL_HOST", "db")  # this is the service name in docker compose
-MYSQL_USER = os.getenv("MYSQL_USER", "root")
-MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "root")
+MYSQL_USER = os.getenv("MYSQL_USER", "root") # admin
+MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD", "root")  # dopdatabaseroot
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "test_db")
 
 # Setup
@@ -51,7 +51,9 @@ def home():
         cur = conn.cursor()
         cur.execute("select * from test limit 1;")
         output = cur.fetchall()
-    except Exception:
+    except Exception as e:
+        log("ERROR DB")
+        log(e)    
         pass
 
     # Proto
