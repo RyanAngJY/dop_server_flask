@@ -2,8 +2,8 @@ import grpc
 import json
 import os
 import logging
-from flask import Flask, jsonify
-from flask_cors import CORS
+from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 from flask_mysql_connector import MySQL
 from dop_python_pip_package.main_utils.math import add # our own pip library
 from proto.dep.microservice import microservice_pb2_grpc, microservice_pb2
@@ -77,11 +77,22 @@ def on_send_success(metadata):
 def on_send_error(excp):
     log("ERROR AFTER SENT TO KAFKA")
 
-@app.route('/api/produce')
+@app.route('/api/produce/')
 def produce():
     future = producer.send(TOPIC, {"test": "hello"}).add_callback(on_send_success).add_errback(on_send_error)
     result = future.get(timeout=5)
     return {}
+
+
+@app.route('/api/upload_image/', methods=["POST"])
+@cross_origin()
+def upload_image():
+    print("UPLOADDD")
+    # print(request.files['file'])
+    return jsonify({
+        "image_url": "image_url_here"
+    })
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8000)
