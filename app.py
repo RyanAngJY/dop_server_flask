@@ -9,6 +9,7 @@ from dop_python_pip_package.main_utils.math import add # our own pip library
 from proto.dep.microservice import microservice_pb2_grpc, microservice_pb2
 from kafka import KafkaProducer
 from log_util import log, create_file_handler, default_formatter
+from flask_socketio import SocketIO, emit
 
 # Env variables
 LOCALHOST = os.getenv("LOCALHOST", "localhost")
@@ -21,7 +22,9 @@ MYSQL_DATABASE = os.getenv("MYSQL_DATABASE", "test_db")
 
 # Setup
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret!'
 CORS(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # MySQL Config
 app.config['MYSQL_HOST'] = MYSQL_HOST
@@ -83,6 +86,27 @@ def produce():
     result = future.get(timeout=5)
     return {}
 
+# Handle the Client connecting to the websocket
+@socketio.on('connect')
+def test_connect():
+    emit('myCustomResponseMessage', {'data': 'triggered test_connect'})
+
+@socketio.on('message')
+def handle_message(data):
+    emit('myCustomResponseMessage', {'data': 'triggered handle_message'})
+
+# Client socket has to connect to the correct namespace
+@socketio.on('message', namespace="/custom_namespace")
+def handle_namespace_message(data):
+    # When we set broadcast=True, all socket clients connected to this namespace will receive a message with event name "broadcastedMessage"
+    emit('broadcastedMessage', {'data': 'triggered broadcast handle_namespace_message'}, broadcast=True)
+    # Note that if we do not set broadcast=True, the mesage will only be emitted to only the client socket
+    emit('myCustomResponseMessage', {'data': 'triggered handle_namespace_message'})
+
+# Will be triggered for messages with event name "custom_message"
+@socketio.on('custom_message')
+def handle_custom_message(data):
+    emit('myCustomResponseMessage', {'data': 'triggered handle_custom_message'})
 
 @app.route('/api/upload_image/', methods=["POST"])
 @cross_origin()
@@ -93,6 +117,5 @@ def upload_image():
         "image_url": "image_url_here"
     })
 
-
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8000)
+    socketio.run(app, debug=True, host='0.0.0.0', port=8000)
