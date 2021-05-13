@@ -13,9 +13,12 @@ start:
 	docker-compose down
 	docker-compose up --build
 
-db: # to access the DB shell
+shell_db: # to access the DB shell
  	# make sure you run `docker-compose up` first
 	docker-compose exec db mysql -u root -proot -D test_db
+
+shell_dop_kafka_consumer:
+	docker-compose exec consumer sh
 
 build_local:
 	docker build -t $(IMAGE_NAME) . -f Dockerfile.local

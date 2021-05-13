@@ -65,20 +65,25 @@ def home():
     stub = microservice_pb2_grpc.BlogServiceStub(channel)
     response = stub.GetBlog(microservice_pb2.GetBlogRequest())
 
-    # Kafka
-    log("SENDING TO KAFKA")
-    future = producer.send(TOPIC, {"test": "hello"}).add_callback(on_send_success).add_errback(on_send_error)
-    result = future.get(timeout=5)
-    log("Result = {}".format(result))
+    # Kafka -- not working on Kubernetes, comment out for simplicity
+    # log("SENDING TO KAFKA")
+    # future = producer.send(TOPIC, {"test": "hello"}).add_callback(on_send_success).add_errback(on_send_error)
+    # result = future.get(timeout=5)
+    # log("Result = {}".format(result))
 
-    return jsonify({"db": str(output), "topic": result.topic, "lib": num, "microservice": str(response.blog)})
+    return jsonify({
+        "db": str(output), 
+        # "topic": result.topic, 
+        "lib": num, 
+        "microservice": str(response.blog)
+    })
 
-
-def on_send_success(metadata):
-    log("SUCCESSFULLY SENT TO KAFKA")
-
-def on_send_error(excp):
-    log("ERROR AFTER SENT TO KAFKA")
+# We use this endpoint to check if consumer really did consume the message
+@app.route('/api/notify/')
+def consumer_notify_success():
+    log("SUCCESSFULLY CONSUMED BY CONSUMER")
+    # If you trigger an emit in a regular function, it will default to a broadcast
+    socketio.emit('isConsumerWorking', {'data': 'triggered consumer_notify_success'})
 
 @app.route('/api/produce/')
 def produce():
@@ -116,6 +121,12 @@ def upload_image():
     return jsonify({
         "image_url": "image_url_here"
     })
+
+def on_send_success(metadata):
+    log("SUCCESSFULLY SENT TO KAFKA")
+
+def on_send_error(excp):
+    log("ERROR AFTER SENT TO KAFKA")
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=8000)

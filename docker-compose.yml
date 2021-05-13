@@ -52,6 +52,8 @@ services:
             dockerfile: Dockerfile.consumer
         environment:
             - KAFKA_HOST=kafka # this references the KAFKA_ADVERTISED_HOST_NAME
+            - SERVER_FLASK_HOST=backend
+            - SERVER_FLASK_PORT=8000
         volumes:
             - .:/app # mount the current dir to /app dir in the container (so that when any changes made locally will be reflected in the container)
         restart: always # this is so that it will keep restarting until it manages to connect with Kafka (this is because the "depends_on" does not necessarily mean the Kafka is actually ready to be connected after it is run)
