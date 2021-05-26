@@ -1,5 +1,5 @@
 # Production Docker Image
-FROM python:3.7-stretch
+FROM docker.io/library/python:3.7-stretch
 
 WORKDIR /app
 
