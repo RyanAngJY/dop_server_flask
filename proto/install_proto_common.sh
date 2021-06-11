@@ -1,3 +1,5 @@
+#!/bin/bash
+
 BASEDIR=$(dirname "$0") # get the directory of this file
 BRANCH_NAME=$1
 

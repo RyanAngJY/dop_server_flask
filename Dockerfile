@@ -9,4 +9,7 @@ RUN pip install -r requirements.txt
 
 COPY . /app
 
+RUN apt-get update && apt-get install make jq -y
+RUN make install_gen
+
 CMD ["python", "app.py"]
